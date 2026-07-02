@@ -20,11 +20,38 @@
 4. **外付けRAID に固定ドライブレター**を割り当て（例では `E:`）。
 5. Docker Desktop の設定で、使用するドライブ（`C:` と `E:`）が **File Sharing** に含まれていることを確認。
 
+## Windows CLI ツールの準備（初めての方向け）
+
+このリポジトリは PowerShell 上で `docker compose` と `.ps1` スクリプトを動かす前提。
+以下を一度だけ導入する。
+
+1. **PowerShell を管理者で開く**
+   スタートメニューで「PowerShell」を検索 → 右クリック →「管理者として実行」。
+
+2. **必要ツールをインストール**（`winget` は Windows 10/11 標準）
+   ```powershell
+   winget install Microsoft.WindowsTerminal   # ターミナル（Win11は標準。無ければ）
+   winget install Git.Git                      # git コマンド
+   winget install GitHub.cli                   # GitHub 認証を簡単にする gh
+   ```
+   インストール後、**ターミナルを一度閉じて開き直す**（PATH を反映させるため）。
+
+3. **GitHub にログイン**（private リポジトリを clone するのに必要）
+   ```powershell
+   gh auth login
+   #  → GitHub.com  → HTTPS  → ブラウザで認証、を選ぶ
+   ```
+   これで `git` の認証も肩代わりされる。
+
+> 以降のコマンドはすべて **Windows Terminal（PowerShell）** に貼り付けて実行する。
+> `docker` コマンドは Docker Desktop を起動しておくと使える。
+
 ## セットアップ手順
 
 ```powershell
-# 1. clone
-git clone https://github.com/<you>/immich-base.git
+# 1. clone（gh 経由が簡単。認証済みならそのまま通る）
+gh repo clone ogata-ryosuke/immich-base
+# もしくは:  git clone https://github.com/ogata-ryosuke/immich-base.git
 cd immich-base
 
 # 2. 環境ファイルを作成して編集（パス・パスワード・バージョン）
