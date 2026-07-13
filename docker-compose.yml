@@ -17,7 +17,9 @@ services:
       # 新規アップロード（スマホバックアップ等）。RAID 上でも可（DBほど致命的でない）
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       # 既存写真の外部ライブラリ（読み取り専用でマウント）
-      - ${EXTERNAL_LIBRARY}:/mnt/external:ro
+      # EXTERNAL_LIBRARY が未設定/空でも落ちないよう、ダミーフォルダを既定にしている。
+      # 既存写真を使うときは .env の EXTERNAL_LIBRARY に実フォルダ（例 E:/Photos）を指定する。
+      - ${EXTERNAL_LIBRARY:-./external-placeholder}:/mnt/external:ro
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
