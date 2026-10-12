@@ -1,4 +1,4 @@
-# immich Postgres の論理バックアップ（pg_dumpall を gzip 圧縮して保存）
+﻿# immich Postgres の論理バックアップ（pg_dumpall を gzip 圧縮して保存）
 # 使い方:  .\scripts\backup-db.ps1
 # 定期実行の登録:  .\scripts\register-backup-task.ps1
 #
@@ -30,16 +30,16 @@ $outFile = Join-Path $backupDir "immich-db-$stamp.sql.gz"
 
 Write-Host "[backup] dumping immich database..."
 
-# コンテナ内で pg_dumpall→gzip を完結させ、docker cp で取り出す
-# （PowerShell のストリーム経由だと gzip バイナリが壊れるため、この方式にする）
-docker exec $container sh -c "pg_dumpall --clean --if-exists --username=$dbUser | gzip" `
-    | Set-Content -Path $outFile -Encoding Byte 2>$null
+# コンテナ内で pg_dumpall→gzip をファイルに書き出し、docker cp で取り出す。
+# （PowerShell のパイプ経由だと gzip バイナリが壊れ、5.1 では Set-Content -Encoding Byte も
+#   文字列パイプを受け取れず失敗するため、コンテナ側で完結させるこの方式を使う）
+docker exec $container sh -c "pg_dumpall --clean --if-exists --username=$dbUser | gzip > /tmp/immich-db.sql.gz"
+if ($LASTEXITCODE -ne 0) { throw "pg_dumpall に失敗した（コンテナ名/ユーザー名を確認）。" }
+docker cp "$container`:/tmp/immich-db.sql.gz" $outFile
+docker exec $container rm -f /tmp/immich-db.sql.gz
 
-# Set-Content -Encoding Byte が使えない環境向けフォールバック（安全策）
 if (-not (Test-Path $outFile) -or (Get-Item $outFile).Length -eq 0) {
-    docker exec $container sh -c "pg_dumpall --clean --if-exists --username=$dbUser | gzip > /tmp/immich-db.sql.gz"
-    docker cp "$container`:/tmp/immich-db.sql.gz" $outFile
-    docker exec $container rm -f /tmp/immich-db.sql.gz
+    throw "ダンプの取り出しに失敗した: $outFile"
 }
 
 $sizeMB = [math]::Round((Get-Item $outFile).Length / 1MB, 1)

@@ -1,4 +1,4 @@
-# backup-db.ps1 を Windows タスクスケジューラに日次登録する。
+﻿# backup-db.ps1 を Windows タスクスケジューラに日次登録する。
 # 管理者 PowerShell で実行:  .\scripts\register-backup-task.ps1
 # 既定は毎日 03:30。時刻は -At で変更可。
 

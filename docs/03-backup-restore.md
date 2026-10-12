@@ -50,8 +50,8 @@ robocopy E:\Photos        F:\backup\Photos        /MIR /R:2 /W:5 /LOG+:F:\backup
 
 ## アップグレード前の儀式
 
+更新は専用スクリプトが更新前に自動でダンプを取る。手順は [docs/05-update.md](05-update.md) を参照。
+
 ```powershell
-.\scripts\backup-db.ps1     # 必ずダンプ
-docker compose pull
-docker compose up -d
+.\scripts\update-immich.ps1 -Version v1.120.0   # ダンプ→pull→再作成→ヘルス確認
 ```

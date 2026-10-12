@@ -1,4 +1,4 @@
-# immich Postgres をダンプから復元する。
+﻿# immich Postgres をダンプから復元する。
 # 使い方:  .\scripts\restore-db.ps1 -DumpPath C:\immich\backups\immich-db-YYYYMMDD-HHmmss.sql.gz
 #
 # ★ 復元は既存DBを破棄して入れ替える破壊的操作。実行前に現在のDBもダンプしておくこと。

@@ -78,12 +78,14 @@ docker compose up -d
 
 ## 更新
 
+Release Notes を読んでから、更新スクリプトを使う（DBダンプ→pull→再作成→ヘルス確認を自動化）。
+
 ```powershell
-notepad .env                # IMMICH_VERSION を新しいタグに（release notes 確認後）
-.\scripts\backup-db.ps1     # 更新前に必ずDBダンプ
-docker compose pull
-docker compose up -d
+.\scripts\update-immich.ps1 -Version v1.120.0   # 新しいタグに固定して更新
+.\scripts\update-immich.ps1                      # タグ据え置きで再pullのみ
 ```
+
+手順・オプション・ロールバックは [docs/05-update.md](docs/05-update.md) を参照。
 
 ## 構成ファイル
 
@@ -91,6 +93,7 @@ docker compose up -d
 |---|---|
 | `docker-compose.yml` | immich 本体（server / ML / postgres / redis） |
 | `example.env` | 環境変数のテンプレート（コピーして `.env` に） |
+| `scripts/update-immich.ps1` | immich のアップデート（ダンプ→pull→再作成→確認） |
 | `scripts/backup-db.ps1` | Postgres の日次ダンプ |
 | `scripts/restore-db.ps1` | ダンプからの復元 |
 | `scripts/register-backup-task.ps1` | バックアップをタスクスケジューラに登録 |
